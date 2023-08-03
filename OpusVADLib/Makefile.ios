@@ -1,0 +1,28 @@
+UNAME=$(shell uname)
+OPUS_VERSION=1.3.1
+OPUSSRC=../opus-$(OPUS_VERSION)
+CFLAGS=-fPIC -Wall -I$(OPUSSRC)/include -I$(OPUSSRC)/src -I$(OPUSSRC)/celt -I$(OPUSSRC)/silk -I$(OPUSSRC)/silk/float -std=c99
+LDLIBS=-lopus
+ifeq ($(UNAME),Darwin)
+  LIBEXT=a
+  LD=ar
+else
+  LIBEXT=so
+  LD=ar
+endif
+
+OBJS=opusvad.o adpcm.o
+
+.DEFAULT: libopusvad.$(LIBEXT)
+
+libopusvad.$(LIBEXT): $(OBJS)
+	$(LD) -r $@ $^
+
+clean:
+	rm -f *.$(LIBEXT) *.o
+	rm -rf doc
+
+doc:
+	doxygen
+
+.PHONY: clean doc
