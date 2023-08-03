@@ -1,0 +1,81 @@
+#built application files
+*.apk
+*.ap_
+*.exe
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+out/
+doc/
+distributions/
+reports/
+tmp/
+
+OpusVADJava/target/
+OpusVADTool/opusvadtool
+OpusVADJS/node_modules
+opus-*
+*.o
+*.obj
+*.dll
+*.lib
+*.exp
+*.dylib
+*.pcm
+*.adpcm
+*.mp3
+*.wav
+*.log
+log.txt
+cache.txt
+
+!OpusVADTool/in.wav
+!OpusVADJS/example/audio/sample.pcm
+
+
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# Eclipse project files
+.classpath
+.project
+.settings
+
+# Android Studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+#build/
+
+# vs code
+.vscode/
+.vs/
+Debug/
+Release/
+x64/
+
+#NDK
+obj/
+
+.hg*
+*.pptx
+*.gz
+*.bak
+
+# emacs
+*~
