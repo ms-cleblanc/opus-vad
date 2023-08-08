@@ -1,12 +1,13 @@
 OPUS_VERSION=1.3.1
+INSTALL_DIR="../dist/centos"
 
 echo "Installing dependencies...."
-sudo yum groupinstall -y  /"Development Tools"
-sudo yum install -y doxygen
-sudo yum install -y maven
-sudo yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
-sudo yum install -y sox
-sudo yum install -y patch
+yum groupinstall -y  /"Development Tools"
+yum install -y doxygen
+yum install -y maven
+yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
+yum install -y sox
+yum install -y patch
 
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
@@ -14,9 +15,9 @@ echo "DONE"
 echo
 
 echo "Building Nuance Voice Activity Detector documentation"
-cd OpusVADLib
-doxygen
 cd ..
+doxygen
+cd ./libopus-build-scripts
 echo "DONE"
 echo
 
@@ -26,20 +27,22 @@ tar -zxvf opus-${OPUS_VERSION}.tar.gz
 cd opus-${OPUS_VERSION}/ && patch -p1 < ../opus.patch
 ./configure
 make
-cd ..
+mkdir -p ../${INSTALL_DIR}
+cp .libs/libopus.* ../${INSTALL_DIR}
+cd ../..
+
 echo "DONE"
 echo
 
 echo "Making OpusVADLib...."
-cd OpusVADLib
 make
 make libopusvadjava.so
-cd ..
+cp libopusvad*.* ./dist/centos
 echo "DONE"
 echo
 
 echo "Making OpusVADTool..."
-cd OpusVADTool
+cd samples/C
 make
 ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
 
@@ -63,12 +66,12 @@ ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
 #         sox in.wav -t ima -e ima-adpcm -r 16000 -c 1 -N - | ./opusvadtool -f - -a -n
 #         sox in.wav -r 16000 -b 16 -e signed -L -c 1 -t raw - | ./opusvadtool -f - -t 30 -e 700
 
-cd ..
+cd ../..
 echo "DONE"
 echo
 
 echo "Making OpusVADJava..."
-cd OpusVADJava
+cd samples/java
 mvn install
 ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
 
