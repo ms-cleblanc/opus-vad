@@ -41,11 +41,12 @@ buildvad()
 
 	SYSROOT=eval xcrun -sdk ${SDK} --show-sdk-path
 
-	#export CC="xcrun -sdk ${SDK} clang -arch ${ARCH} -miphoneos-version-min=${MIN_VERSION}"
-	export CC="xcrun -sdk ${SDK} clang -arch ${ARCH}"
+	export CC="xcrun -sdk ${SDK} clang -fembed-bitcode -arch ${ARCH}"
+	export CCAS="xcrun -sdk ${SDK} clang -fembed-bitcode -arch ${ARCH}"
+
 	make -f Makefile.ios
 
-	cp libopusvad.a ./temp/libopusvad_${ARCH}.a
+	cp libopusvad.a ./dist/ios/libopusvad_${ARCH}.a
 	make -f Makefile.ios clean
 
 }
@@ -79,9 +80,10 @@ buildvad iphonesimulator i386
 buildvad iphonesimulator x86_64
 
 #lipo temp/libopusvad_armv7.a temp/libopusvad_armv7s.a temp/libopusvad_arm64.a temp/libopusvad_i386.a temp/libopusvad_x86_64.a -create -output ${INSTALL_DIR}/libopusvad.a
-lipo ./temp/libopusvad_armv7s.a ./temp/libopusvad_arm64.a ./temp/libopusvad_i386.a ./temp/libopusvad_x86_64.a -create -output ${INSTALL_DIR}/libopusvad.a
+lipo ./temp/libopusvad_armv7s.a ./temp/libopusvad_arm64.a ./temp/libopusvad_i386.a ./temp/libopusvad_x86_64.a -create -output ./dist/ios/libopusvad.a
 lipo -info ${INSTALL_DIR}/libopusvad.a
 
 
-#rm -rf temp
+rm -rf temp
+rm -rf obj
 

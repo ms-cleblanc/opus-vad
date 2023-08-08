@@ -6,6 +6,8 @@ brew install doxygen
 brew install maven
 brew install sox
 
+INSTALL_DIR="../dist/mac"
+
 ## Verify the path to Java on your Mac...
 export JAVA_HOME=$(/usr/libexec/java_home)
 export DYLD_LIBRARY_PATH=.
@@ -26,6 +28,7 @@ tar -zxvf opus-${OPUS_VERSION}.tar.gz
 cd opus-${OPUS_VERSION}/ && patch -p1 < ../opus.patch
 ./configure
 make ; make install
+cp .libs/libopus.a ../${INSTALL_DIR}
 cd ..
 echo "DONE"
 echo
@@ -34,6 +37,7 @@ echo "Making OpusVADLib...."
 cd ..
 make
 make libopusvadjava.dylib
+mv *.dylib ${INSTALL_DIR}
 echo "DONE"
 echo
 

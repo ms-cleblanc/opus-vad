@@ -29,7 +29,7 @@ libopusvad.$(LIBEXT): $(OBJ_FILES)
 	$(LD) -r $@ $^
 
 clean:
-	rm -f *.$(LIBEXT) *.o
+	rm -f *.$(LIBEXT) obj/*.o
 	rm -rf doc
 
 doc:
