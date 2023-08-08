@@ -58,7 +58,7 @@ And because the raw pcm audio has been encoded to opus to generate the VAD class
 
 ### Library Performance
 
-The opusvad library has been tested and considered compatible with linux, Mac, Windows, Android, and iOS.
+The opusvad library has been tested and considered compatible with linux, Mac, Android, and iOS.
 
 * The library is designed to use the Opus Library in "narrowband", so CPU usage fits roughly 40MHz or 2% of a 2GHz capturing
 * CPU utilization is ~.02 seconds per 1 second of audio
@@ -87,19 +87,18 @@ The following sections describe
 The package that Nuance provides contains the following:
 * shell `scripts` to help automate building the libraries and test apps
 * opus.patch - a patch file applied against libopus to expose the VAD module
-* [OpusVADLib](#opusvadlib) - this folder contains the core opusvad library that you'll use in your applications
-* [OpusVADTool](#opusvadtool) - this folder contains a simple c client for validating the build of the opusvad library
-* [OpusVADJava](#opusvadjava) - this folder contains a simple java client for validating the jni wrapper provided as part of the build of the opusvad library
-
+* [OpusVAD](#opusvad) - this folder contains the core opusvad library that you'll use in your applications
+* [samples/C](#samples) - this folder contains an example of how to use the opusvad library to process audio in 'C'
+* [samples/java](#samples) - this folder contains an example of how to use the opusvadjava JNI layer to process audio in Java
 ### Scripts
 
-The `opus-vad` package includes the following scripts:
+The `opus-vad` package includes the following scripts in libopus-build-scripts:
 
-* mac_install.sh
-* ubuntu_install.sh
-* centos_install.sh
-* build_libopus_android.sh
-* build_libopus_ios.sh
+* mac.sh
+* ubuntu.sh
+* centos.sh
+* android.sh
+* ios.sh
 
 Use these scripts to:
 
@@ -109,7 +108,7 @@ Use these scripts to:
 
 It's recommended to start with one of these scripts before proceeding further into the package sub-folders.
 
-### OpusVADLib
+### OpusVAD
 
 If you're interested in understanding how opusvad works, modifying how the library works, or need to compile and build for a platform not already covered by one of the build scripts provided, then this is where you want to start.
 
@@ -119,28 +118,14 @@ The key files you wants to explore are:
 * opusvad.c
 * opusvadjava.c
 
-To build the library, run:
-```shell
-$ make
-cc -O -fPIC -Wall -I../opus-1.3.1/include -I../opus-1.3.1/src -I../opus-1.3.1/celt -I../opus-1.3.1/silk -I../opus-1.3.1/silk/float -std=c99   -c -o opusvad.o opusvad.c
-gcc -L../opus-1.3.1/.libs -shared -o libopusvad.dylib opusvad.o adpcm.o dequeue.o -lopus -lc
-```
-
-To create the jni wrapper, run:
-
+To build the library, run the appropriate build script for your platform:
 **osx**
 ```shell
-$ make libopusvadjava.dylib 
-gcc -L../opus-1.3.1/.libs -shared -o libopusvadjava.dylib opusvad.o adpcm.o dequeue.o opusvadjava.o -lopus -lc
+(libopus-build-scripts)$ ./mac.sh 
 ```
 
-**centos/ubuntu**
-```shell
-$ make libopusvadjava.so 
-gcc -L../opus-1.3.1/.libs -shared -o libopusvadjava.dylib opusvad.o adpcm.o dequeue.o opusvadjava.o -lopus -lc
-```
 
-### OpusVADTool
+### samples/C
 
 `opusvadtool` provides a simple client written in c illustrating how to use the opusvad library. All of the code can be found in:
 
@@ -149,26 +134,6 @@ gcc -L../opus-1.3.1/.libs -shared -o libopusvadjava.dylib opusvad.o adpcm.o dequ
 To build the tool, run:
 
 > set OPUS_VERSION = 1.3.1
-
-**osx**
-```shell
-make
-cc -I../OpusVADLib -Wall -std=c99  -L../opus-1.3.1/.libs -L../OpusVADLib  opusvadtool.c  -lopusvad -lopus -o opusvadtool
-```
-
-```shell
-ln -sf ../opus-${OPUS_VERSION}/.libs/*.dylib ../OpusVADLib/*.dylib .
-```
-
-**centos/ubuntu**
-```shell
-make
-cc -I../OpusVADLib -Wall -std=c99  -L../opus-1.3.1/.libs -L../OpusVADLib  opusvadtool.c  -lopusvad -lopus -o opusvadtool
-```
-
-```shell
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
-```
 
 **`opusvadtool` usage details**
 
@@ -199,7 +164,7 @@ Examples:
 Time: 0.0400 seconds
 ```
 
-### OpusVADJava
+### samples/java
 
 `opusvadjava` provides a simple client written in java illustrating how to use the opusvad library jni wrapper. All of the code can be found in:
 
@@ -277,36 +242,19 @@ Buffer size (bytes): 8960
 To build libopus for iOS, run the following script
 
 ```bash
-$ bash build_libopus_ios.sh  
+$ ios.sh  
 ```
-Then, under ./OpusVADLib, run the following:
-```bash
-$ bash build_opusvad_ios.sh  
-```
-
-You should have two library bundles compatible with iOS and iOS simulator under ./lib-ios that you can add to your iOS project.
+You should have two library bundles compatible with iOS and iOS simulator under ./dist/ios that you can add to your iOS project.
 
 ### Android
-
-To build opusvad for Android, setup your ndk toolchain and provide Makefile.android to make. For example:
-
-```bash
-~/Library/Android/sdk/ndk-bundle/build/tools $ bash make-standalone-toolchain.sh --arch=arm --platform=android-21 --ndk-dir=../.. --install-dir=./android-ndk-standalone-toolchain --toolchain=arm-linux-androideabi-4.9 system=darwin-x86_64
-```
-
-**NOTE do this for each architecture you intend to support
 
 To build libopus for Android, run the following script
 
 ```bash
-$ bash build_libopus_android.sh  "PATH_TO_YOUR_NDK"
-```
-Then, under ./OpusVADLib, run the following:
-```bash
-$ bash build_opusvad_android.sh  "PATH_TO_YOUR_NDK"
+$ android.sh (PATH_TO_YOUR_INSTALLED_NDK)
 ```
 
-You should have two library bundles compatible with Android and Android emulator under ./lib-android/$ARCH that you can add to your Android project.
+You should have two library bundles compatible with Android and Android emulator under ./dist/android/$ARCH that you can add to your Android project.
 
 ## Overview of the opusvad API
 
