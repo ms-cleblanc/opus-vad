@@ -17,10 +17,10 @@ doc/
 distributions/
 reports/
 tmp/
+temp/
 
-OpusVADJava/target/
-OpusVADTool/opusvadtool
-OpusVADJS/node_modules
+samples/java/target/
+samples/C/opusvadtool
 opus-*
 *.o
 *.obj
@@ -35,10 +35,6 @@ opus-*
 *.log
 log.txt
 cache.txt
-
-!OpusVADTool/in.wav
-!OpusVADJS/example/audio/sample.pcm
-
 
 
 # Local configuration file (sdk path, etc)
