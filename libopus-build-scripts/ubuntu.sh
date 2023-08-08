@@ -1,5 +1,6 @@
 #!/bin/bash
 OPUS_VERSION=1.3.1
+INSTALL_DIR="../dist/ubuntu"
 
 echo "Installing dependencies...."
 if [[ "$EUID" = 0 ]]; then
@@ -7,11 +8,13 @@ if [[ "$EUID" = 0 ]]; then
     apt-get -y install maven
     apt-get -y install openjdk-8-jdk
     apt-get -y install sox
+    apt-get -y install patch
 else
     sudo apt-get -y install doxygen
     sudo apt-get -y install maven
     sudo apt-get -y install openjdk-8-jdk
     sudo apt-get -y install sox
+    sudo apt-get -y install patch
 fi
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
@@ -19,9 +22,9 @@ echo "DONE"
 echo
 
 echo "Building Nuance Voice Activity Detector documentation"
-cd OpusVADLib
-doxygen
 cd ..
+doxygen
+cd ./libopus-build-scripts
 echo "DONE"
 echo
 
@@ -31,22 +34,23 @@ tar -zxvf opus-${OPUS_VERSION}.tar.gz
 cd opus-${OPUS_VERSION}/ && patch -p1 < ../opus.patch
 ./configure
 make
-cd ..
+mkdir -p ../${INSTALL_DIR}
+cp .libs/libopus.* ../${INSTALL_DIR}
+cd ../..
 echo "DONE"
 echo
 
 echo "Making OpusVADLib...."
-cd OpusVADLib
 make
 make libopusvadjava.so
-cd ..
+cp libopusvad*.* ./dist/ubuntu
 echo "DONE"
 echo
 
 echo "Making OpusVADTool..."
-cd OpusVADTool
+cd samples/C
 make
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
+ln -s ../${INSTALL_DIR}/*.so .
 
 ## Try running opusvadtool...
 ./opusvadtool -h
@@ -71,14 +75,14 @@ ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
 # test with audio file...
 ./opusvadtool -f in.pcm
 
-cd ..
+cd ../..
 echo "DONE"
 echo
 
 echo "Making OpusVADJava..."
-cd OpusVADJava
+cd samples/java
 mvn install
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
+ln -s ../${INSTALL_DIR}/*.so .
 
 ## Try running opusvadjava...
 java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -f in.pcm
