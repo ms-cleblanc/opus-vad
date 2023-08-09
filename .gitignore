@@ -19,6 +19,7 @@ reports/
 tmp/
 temp/
 
+java/target/
 samples/java/target/
 samples/C/opusvadtool
 opus-*
