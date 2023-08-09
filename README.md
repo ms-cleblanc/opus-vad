@@ -126,8 +126,7 @@ To build the library, run the appropriate build script for your platform:
 (libopus-build-scripts)$ ./mac.sh 
 ```
 
-
-### samples/C
+### samples C
 
 `opusvadtool` provides a simple client written in c illustrating how to use the opusvad library. All of the code can be found in:
 
@@ -176,8 +175,9 @@ Time: 0.0400 seconds
 ```shell
 mvn clean install
 ...
+```
 
-### samples/java
+### samples java
 
 `opusvadjava` provides a simple client written in java illustrating how to use the opusvad library jni wrapper. All of the code can be found in:
 
