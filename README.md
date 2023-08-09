@@ -110,7 +110,7 @@ Use these scripts to:
 
 It's recommended to start with one of these scripts before proceeding further into the package sub-folders.
 
-### OpusVAD
+### src
 
 If you're interested in understanding how opusvad works, modifying how the library works, or need to compile and build for a platform not already covered by one of the build scripts provided, then this is where you want to start.
 
