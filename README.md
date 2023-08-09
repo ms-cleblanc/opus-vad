@@ -204,7 +204,7 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 ```
 
 **centos/ubuntu**
-``shell
+```shell
 mvn clean install
 ...
 [INFO] ------------------------------------------------------------------------
@@ -214,6 +214,7 @@ mvn clean install
 [INFO] Finished at: 2022-04-06T16:08:20-04:00
 [INFO] ------------------------------------------------------------------------
 ```
+
 **`opusvadjava` usage details**
 
 ```shell
@@ -227,7 +228,8 @@ usage: java -jar Main-0.0.1-jar-with-dependencies.jar
  -eos,--eos <eos>                       End of speech window in ms. Default: 900
  -s,--sensitivity <sensitivity>         Speech detection sensitivity in the range of 0 to 100. Default: 20
  -c,--complexity <complexity>           Opus VAD complexity setting in the range of 0 to 10. Default: 3
- -brt,--bit_rate_type <bit_rate_type>   Opus VAD bit rate type. Options are 0 (VBR), 1 (CVBR), 2 (CBR). Default: 1```
+ -brt,--bit_rate_type <bit_rate_type>   Opus VAD bit rate type. Options are 0 (VBR), 1 (CVBR), 2 (CBR). Default: 1
+```
 
 **example**
 
