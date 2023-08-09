@@ -88,10 +88,10 @@ The following sections describe
 The package that Nuance provides contains the following:
 * shell `scripts` to help automate building the libraries and test apps
 * opus.patch - a patch file applied against libopus to expose the VAD module
-* [src](#opusvad) - this folder contains the core opusvad library that you'll use in your applications
-* [java](#opusvadjava) - this folder contains a project that builds with maven creating a jar file that includes all the various platfrom distributions (except android and ios)
-* [samples/C](#samples) - this folder contains an example of how to use the opusvad library to process audio in 'C'
-* [samples/java](#samples) - this folder contains an example of how to use the opusvadjava JNI layer to process audio in Java
+* [src](#src) - this folder contains the core opusvad library that you'll use in your applications
+* [java](#java) - this folder contains a project that builds with maven creating a jar file that includes all the various platfrom distributions (except android and ios)
+* [samples/C](#samples/C) - this folder contains an example of how to use the opusvad library to process audio in 'C'
+* [samples/java](#samples/java) - this folder contains an example of how to use the opusvadjava JNI layer to process audio in Java
 ### Scripts
 
 The `opus-vad` package includes the following scripts in libopus-build-scripts:
