@@ -9,11 +9,12 @@ Voice Activity Detection (VAD) events.
 `opusvad` is a library that implements speech-endpointing on raw PCM audio streams. The library consists of two core components:
 
 * libopus, an open-source audio encoder/decoder available on [github](https://github.com/xiph/opus)
-* opusvad, a small c library implemented by Nuance that wraps the libopus encoder and VAD module, providing clients with an API for:
+* libopusvad, a small c library implemented by Nuance that wraps the libopus encoder and VAD module, providing clients with an API for:
   *  capturing start and end of speech events in the audio stream
   *  tuning the encoder and endpointer algorithms
   *  using the opus encoded audio for streaming to Nuance's ASR services
   *  support for adpcm audio streams
+* libopusvadjava, a small c library similar to libopusvad but also including a JNI layer
 
 ### Why Use opusvad?
 
@@ -87,7 +88,8 @@ The following sections describe
 The package that Nuance provides contains the following:
 * shell `scripts` to help automate building the libraries and test apps
 * opus.patch - a patch file applied against libopus to expose the VAD module
-* [OpusVAD](#opusvad) - this folder contains the core opusvad library that you'll use in your applications
+* [src](#opusvad) - this folder contains the core opusvad library that you'll use in your applications
+* [java](#opusvadjava) - this folder contains a project that builds with maven creating a jar file that includes all the various platfrom distributions (except android and ios)
 * [samples/C](#samples) - this folder contains an example of how to use the opusvad library to process audio in 'C'
 * [samples/java](#samples) - this folder contains an example of how to use the opusvadjava JNI layer to process audio in Java
 ### Scripts
@@ -163,22 +165,31 @@ Examples:
 [eba43354-06de-45c1-b819-585ac2584855] sos: 336ms
 Time: 0.0400 seconds
 ```
+### java
+
+`java` provides a simple jar library containing all of the 'C' libraries and JNI implemention required to use opusvad in your Java application.
+
+* src/main/java/com/nuance/opusvad/jni/OpusVAD.java
+* src/main/java/com/nuance/opusvad/jni/OpusVADOptions.java
+
+**building and installing locally**
+```shell
+mvn clean install
+...
 
 ### samples/java
 
 `opusvadjava` provides a simple client written in java illustrating how to use the opusvad library jni wrapper. All of the code can be found in:
 
 * src/main/java/com/nuance/opusvad/Main.java
-* src/main/java/com/nuance/opusvad/jni/OpusVAD.java
-* src/main/java/com/nuance/opusvad/jni/OpusVADOptions.java
 
-To build the tool, run:
+To build the tool first build and install the java jar component, then run:
 
 > set OPUS_VERSION = 1.3.1
 
 **osx**
 ```shell
-mvn install
+mvn clean install
 ...
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
@@ -190,14 +201,11 @@ mvn install
 
 ```shell
 export JAVA_HOME=$(/usr/libexec/java_home)
-export DYLD_LIBRARY_PATH=.
-ln -sf ../opus-${OPUS_VERSION}/.libs/*.dylib ../OpusVADLib/*.dylib .
 ```
 
 **centos/ubuntu**
-```shell
-```shell
-mvn install
+``shell
+mvn clean install
 ...
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
@@ -206,18 +214,11 @@ mvn install
 [INFO] Finished at: 2022-04-06T16:08:20-04:00
 [INFO] ------------------------------------------------------------------------
 ```
-
-```shell
-export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
-export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
-```
-
 **`opusvadjava` usage details**
 
 ```shell
- java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -h
-usage: java -jar OpusVADJava-0.0.1-jar-with-dependencies.jar
+ java -jar target/Main-0.0.1-jar-with-dependencies.jar -h
+usage: java -jar Main-0.0.1-jar-with-dependencies.jar
  -h,--help                              Display help
  -f,--file <file>                       Audio file to process
  -adpcm,--adpcm                         Specify if the input audio file is adpcm encoded
@@ -231,7 +232,7 @@ usage: java -jar OpusVADJava-0.0.1-jar-with-dependencies.jar
 **example**
 
 ```shell
-java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -f in.pcm
+java -jar target/Main-0.0.1-jar-with-dependencies.jar -f in.pcm
 Frame bytes: 640
 Buffer size (bytes): 8960
 [58035618-6a90-437d-9b65-fc5f9a27be83] OPUSVAD_SOS pos: 336
