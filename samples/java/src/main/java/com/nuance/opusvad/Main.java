@@ -1,6 +1,7 @@
-package com.nuance.opusvad;
+package com.nuance.samples;
 
 import com.nuance.opusvad.jni.OpusVAD;
+import com.nuance.opusvad.jni.OpusVAD.Listener;
 import com.nuance.opusvad.jni.OpusVADOptions;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -13,16 +14,16 @@ import org.apache.commons.cli.*;
 public class Main {
 
     private static final OpusVAD.Listener mVADListener = new OpusVAD.Listener() {
-        @Override
-        public void onStartOfSpeech(String ctx, int pos) {
-            System.out.println("[" + ctx + "] OPUSVAD_SOS pos: " + pos);
-        }
-        @Override
-        public void onEndOfSpeech(String ctx, int pos) {
-            System.out.println("[" + ctx + "] OPUSVAD_EOS pos: " + pos);
-        }
+                @Override
+                public void onStartOfSpeech(String ctx, int pos) {
+                    System.out.println("[" + ctx + "] OPUSVAD_SOS pos: " + pos);
+                }
+                @Override
+                public void onEndOfSpeech(String ctx, int pos) {
+                    System.out.println("[" + ctx + "] OPUSVAD_EOS pos: " + pos);
+                }
 
-    };    
+            };    
 
     public static Options initializeCLI() {
         Options options = new Options();
@@ -132,13 +133,11 @@ public class Main {
             int sos = cli.hasOption("sos") ? Integer.parseInt(cli.getOptionValue("sos")) : OpusVAD.DEFAULT_SOS_WINDOW_MS;
             int eos = cli.hasOption("eos") ? Integer.parseInt(cli.getOptionValue("eos")) : OpusVAD.DEFAULT_EOS_WINDOW_MS;
                    
-            System.loadLibrary("opus");
-            System.loadLibrary("opusvadjava");
-
             UUID uuid = UUID.randomUUID();
 
             OpusVADOptions options = new OpusVADOptions(uuid.toString(), complexity, bitRateType, sos, eos, sensitivity);
             OpusVAD vad = new OpusVAD(useAdpcm, options, mVADListener);
+
             System.out.println("Frame bytes: " + vad.getFrameBytes());
             System.out.println("Buffer size (bytes): " + (vad.getMaxBufferSamples() * OpusVAD.SAMPLE_BYTES));
 

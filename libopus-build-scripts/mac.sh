@@ -37,7 +37,7 @@ echo "Making OpusVADLib...."
 cd ..
 make
 make libopusvadjava.dylib
-mv *.dylib ${INSTALL_DIR}
+mv *.dylib ./dist/mac
 echo "DONE"
 echo
 

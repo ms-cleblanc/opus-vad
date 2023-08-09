@@ -8,6 +8,13 @@ package com.nuance.opusvad.jni;
  */
 
 import java.nio.ByteBuffer;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class OpusVAD {
     public static final int OPUSVAD_BIT_RATE_TYPE_VBR = 0;
@@ -54,8 +61,60 @@ public class OpusVAD {
 	if (this.mVADListener != null)
 	    this.mVADListener.onEndOfSpeech(ctx, pos);
     }
+
+    public static String determinePlatformPath() {
+        String os = System.getProperty("os.name").toLowerCase();
+        String arch = System.getProperty("os.arch").toLowerCase();
+
     
+
+        if (os.contains("mac")) {
+            return "dist/mac/";
+        } else if (os.contains("win")) {
+            return "dist/windows/";
+        } else if (os.contains("linux")) {
+            // Differentiating between Ubuntu and CentOS
+            try {
+                String content = new String(Files.readAllBytes(Paths.get("/etc/os-release")), StandardCharsets.UTF_8);
+
+                if (content.contains("ID=ubuntu")) {
+                    return "dist/ubuntu/";
+                } else if (content.contains("ID=centos")) {
+                    return "dist/centos/";
+                } else {
+                    // Fallback for other Linux distributions, adjust as needed
+                    return "dist/ubuntu/";
+                }
+            } catch (IOException e) {
+                // Handle the error, for now, default to a generic Linux path
+                return "dist/ubuntu/";
+            }
+        }
+
+        throw new UnsupportedOperationException("Platform not supported: " + os + " " + arch);
+    }
+
+    public static void loadLibrary(String libraryName) {
+        String platformPath = determinePlatformPath();
+        String fullPath = platformPath + System.mapLibraryName(libraryName);
+
+        // Extract and load the library
+        try (InputStream in = OpusVAD.class.getClassLoader().getResourceAsStream(fullPath)) {
+            File tempLib = File.createTempFile(libraryName, ".tmp");
+            Files.copy(in, tempLib.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            System.load(tempLib.getAbsolutePath());
+            tempLib.deleteOnExit();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load library " + libraryName, e);
+        }
+
+    }
+
     public OpusVAD(boolean useAdpcm, OpusVADOptions options, OpusVAD.Listener listener) throws Exception {
+
+        loadLibrary("opus");
+        loadLibrary("opusvadjava");
+
         int res = init(options);
         if (res != 0) {
             throw new Exception("Error with Init: " + res);
