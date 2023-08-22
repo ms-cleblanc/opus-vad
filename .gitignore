@@ -19,9 +19,15 @@ reports/
 tmp/
 temp/
 
+./*.so
+
 java/target/
 samples/java/target/
 samples/C/opusvadtool
+samples/C/*.dylib
+samples/C/*.so
+samples/java/*.dylib
+samples/java/*.so
 opus-*
 *.o
 *.obj

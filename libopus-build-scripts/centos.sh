@@ -2,12 +2,21 @@ OPUS_VERSION=1.3.1
 INSTALL_DIR="../dist/centos"
 
 echo "Installing dependencies...."
+pushd /etc/yum.repos.d/
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+popd
+
+yum update -y
 yum groupinstall -y  /"Development Tools"
 yum install -y doxygen
 yum install -y maven
 yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel
 yum install -y sox
 yum install -y patch
+yum install -y gcc
+yum install -y libuuid-devel
+yum install -y make
 
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
@@ -28,7 +37,8 @@ cd opus-${OPUS_VERSION}/ && patch -p1 < ../opus.patch
 ./configure
 make
 mkdir -p ../${INSTALL_DIR}
-cp .libs/libopus.* ../${INSTALL_DIR}
+cp .libs/libopus.a ../${INSTALL_DIR}
+cp .libs/libopus.so ../${INSTALL_DIR}
 cd ../..
 
 echo "DONE"
@@ -37,14 +47,16 @@ echo
 echo "Making OpusVADLib...."
 make
 make libopusvadjava.so
-cp libopusvad*.* ./dist/centos
+cp libopusvad.so ./dist/centos
+cp libopusvadjava.so ./dist/centos
 echo "DONE"
 echo
 
 echo "Making OpusVADTool..."
 cd samples/C
+make clean
 make
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
+ln -s ../${INSTALL_DIR}/*.so . 2>/dev/null
 
 ## Try running opusvadtool...
 ./opusvadtool -h
@@ -70,13 +82,18 @@ cd ../..
 echo "DONE"
 echo
 
-echo "Making OpusVADJava..."
+echo "Making java lib"
+cd java
+mvn clean install 
+cd ..
+
+echo "Making java sample"
 cd samples/java
-mvn install
-ln -s ../opus-${OPUS_VERSION}/.libs/*.so ../OpusVADLib/*.so .
+mvn clean install
+ln -s ../${INSTALL_DIR}/*.so . 2>/dev/null
 
 ## Try running opusvadjava...
-java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -f in.pcm
+java -jar target/Main-0.0.1-jar-with-dependencies.jar -f in.pcm
 
 ## If successful, you will see the following output
 # Frame bytes: 640
@@ -88,3 +105,4 @@ echo
 
 echo "Installation is complete!"
 echo
+rm ../../obj/*

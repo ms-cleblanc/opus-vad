@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     int complexity = 3;
     int bit_rate_type = 1;
     int sensitivity = 20;
-    char *input;
+    char *input = "";
     char *log_filename = NULL;
     FILE *log_file = NULL;
     int once = 1;
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
                 bb_index = g_sos = g_eos = 0;
                 once = 1;
                 for(int z=0;z<20;z++)
-                    memset(backup_buffer[z], 0, 320);
+                    memset(backup_buffer[z], 0, 320 * sizeof(backup_buffer[0][0]));
         }
         if (error != OPUSVAD_OK)
         {
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
     endclock = clock();
     printf("Time: %.4f seconds\n", (double)(endclock - startclock) / CLOCKS_PER_SEC);
     if (log_file != NULL) {
-        fprintf(log_file, "%s,%d,%d\n",input,g_sos,g_eos);
+        fprintf(log_file, "%s,%ld,%ld\n",input,g_sos,g_eos);
         fclose(log_file);
     }
 

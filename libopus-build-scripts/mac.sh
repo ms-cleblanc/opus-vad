@@ -45,7 +45,7 @@ echo
 echo "Making OpusVADTool..."
 cd samples/C
 make
-ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib .
+ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib . 2>/dev/null
 
 ## Try running opusvadtool...
 ./opusvadtool -h
@@ -71,10 +71,16 @@ cd ../..
 echo "DONE"
 echo
 
+echo "Making java lib"
+cd java
+mvn clean install 
+cd ..
+
+
 echo "Making OpusVADJava..."
 cd ./samples/java
-mvn install
-ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib .
+mvn clean install
+ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib . 2>/dev/null
 
 ## Try running opusvadjava...
 java -jar target/Main-0.0.1-jar-with-dependencies.jar -f in.pcm
@@ -89,3 +95,4 @@ echo
 
 echo "Installation is complete!"
 echo
+rm  ../../obj/*

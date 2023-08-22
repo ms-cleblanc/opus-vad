@@ -3,18 +3,25 @@ OPUS_VERSION=1.3.1
 INSTALL_DIR="../dist/ubuntu"
 
 echo "Installing dependencies...."
+apt-get -y update
 if [[ "$EUID" = 0 ]]; then
     apt-get -y install doxygen
     apt-get -y install maven
     apt-get -y install openjdk-8-jdk
     apt-get -y install sox
     apt-get -y install patch
+    apt-get -y install make
+    apt-get -y install gcc
+    apt-get -y install uuid-dev    
 else
     sudo apt-get -y install doxygen
     sudo apt-get -y install maven
     sudo apt-get -y install openjdk-8-jdk
     sudo apt-get -y install sox
     sudo apt-get -y install patch
+    sudo apt-get -y install make
+    sudo apt-get -y install gcc
+    sudo apt-get -y install uuid-dev    
 fi
 export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")
 export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
@@ -35,7 +42,8 @@ cd opus-${OPUS_VERSION}/ && patch -p1 < ../opus.patch
 ./configure
 make
 mkdir -p ../${INSTALL_DIR}
-cp .libs/libopus.* ../${INSTALL_DIR}
+cp .libs/libopus.a ../${INSTALL_DIR}
+cp .libs/libopus.so ../${INSTALL_DIR}
 cd ../..
 echo "DONE"
 echo
@@ -50,7 +58,7 @@ echo
 echo "Making OpusVADTool..."
 cd samples/C
 make
-ln -s ../${INSTALL_DIR}/*.so .
+ln -s ../${INSTALL_DIR}/*.so . 2>/dev/null
 
 ## Try running opusvadtool...
 ./opusvadtool -h
@@ -79,13 +87,19 @@ cd ../..
 echo "DONE"
 echo
 
+echo "Making java lib"
+cd java
+mvn clean install 
+cd ..
+
+
 echo "Making OpusVADJava..."
 cd samples/java
-mvn install
-ln -s ../${INSTALL_DIR}/*.so .
+mvn clean install
+ln -s ../${INSTALL_DIR}/*.so . 2>/dev/null
 
 ## Try running opusvadjava...
-java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -f in.pcm
+java -jar target/Main-0.0.1-jar-with-dependencies.jar -f in.pcm
 
 ## If successful, you will see the following output
 # Frame bytes: 640
@@ -97,3 +111,5 @@ echo
 
 echo "Installation is complete!"
 echo
+rm ../../obj/*
+
