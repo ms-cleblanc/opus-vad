@@ -2,8 +2,9 @@ UNAME=$(shell uname)
 OPUS_VERSION=1.3.1
 OPUS_SRC=../../libopus-build-scripts/opus-$(OPUS_VERSION)
 CFLAGS=-O -fPIC -Wall -std=c99 -I../../src -Wall -std=c99
-LDFLAGS=-L$(OPUS_SRC)/.libs -L../../
+LDFLAGS=-L$(OPUS_SRC)/.libs
 ifeq ($(UNAME),Darwin)
+	LDFLAGS+=-L../../dist/mac
 	LDLIBS=-lopusvad -lopus
 else
 	LDLIBS=../../obj/dequeue.o ../../obj/opusvad.o ../../obj/adpcm.o $(OPUS_SRC)/.libs/libopus.a -luuid -lm

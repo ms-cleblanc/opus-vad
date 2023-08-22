@@ -45,7 +45,7 @@ echo
 echo "Making OpusVADTool..."
 cd samples/C
 make
-ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../*.dylib .
+ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib .
 
 ## Try running opusvadtool...
 ./opusvadtool -h
@@ -74,10 +74,10 @@ echo
 echo "Making OpusVADJava..."
 cd ./samples/java
 mvn install
-ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../*.dylib .
+ln -sf ../../libopus-build-scripts/opus-${OPUS_VERSION}/.libs/*.dylib ../../dist/mac/*.dylib .
 
 ## Try running opusvadjava...
-java -jar target/OpusVADJava-0.0.1-jar-with-dependencies.jar -f in.pcm
+java -jar target/Main-0.0.1-jar-with-dependencies.jar -f in.pcm
 
 ## If successful, you will see the following output
 # Frame bytes: 640
