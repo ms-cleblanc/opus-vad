@@ -15,6 +15,7 @@ Voice Activity Detection (VAD) events.
   *  using the opus encoded audio for streaming to Nuance's ASR services
   *  support for adpcm audio streams
 * libopusvadjava, a small c library similar to libopusvad but also including a JNI layer
+* COPYING.md, a reproduction of the Opus license [here](https://github.com/xiph/opus/blob/master/COPYING)
 
 ### Why Use opusvad?
 
@@ -36,7 +37,7 @@ Some solution domains like IoT and DTV often see upwards of 50% of requests that
 
 **What is Opus?**
 
-* Opus is a totally open, royalty-free, highly versatile audio codec.
+* Opus is developed with the intent of being a royalty free, highly versatile audio codec.
 * Opus is the industry gold standard for interactive speech and audio transmission over the internet
 * It is standardized by the Internet Engineering Task Force (IETF) as RFC 6716
 
