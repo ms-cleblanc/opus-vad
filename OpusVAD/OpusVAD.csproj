@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <metadata>
+      <id>OpusVAD</id>
+      <version>1.0.0</version>
+      <authors>chrisleblanc@microsoft.com</authors>
+      <owners>Chris LeBlanc</owners>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <description>Package that includes .NET code and Opus library voice activity detection.</description>
+      <tags>Opus audio codec C#</tags>
+      <readme>README.md</readme>
+      <license type="file">LICENSE</license>
+    </metadata>
+  
+</PropertyGroup>
+
+</Project>
